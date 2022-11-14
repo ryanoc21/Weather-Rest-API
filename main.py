@@ -4,11 +4,14 @@ import pandas as pd
 # Instantiate website object
 app = Flask(__name__)
 
+df_station = pd.read_csv("/Users/ryanoconnor/Desktop/Bootcamp_update/weather_api/data_small/stations.txt", skiprows=17)
+station_table = df_station[['STAID', 'STANAME                                 ']]
+
 
 # Connect the html page with the website object
 @app.route("/")
 def home():
-    return render_template("home.html")
+    return render_template("home.html",data=station_table.to_html())
 
 
 @app.route("/api/v1/<station>/<date>")
@@ -17,8 +20,8 @@ def about(station, date):
     filename = "data_small/TG_STAID" + str(station).zfill(6) + ".txt"
 
     # Read the dataframe
-    df = pd.read_csv(filename,skiprows=20,parse_dates=["    DATE"])
-    temperature = df.loc[df['    DATE'] == date]['   TG'].squeeze()/10
+    df = pd.read_csv(filename, skiprows=20, parse_dates=["    DATE"])
+    temperature = df.loc[df['    DATE'] == date]['   TG'].squeeze() / 10
     return {"station": station,
             "date": date,
             "temperature": temperature}
